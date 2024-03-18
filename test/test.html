@@ -1,0 +1,54 @@
+
+<button onclick="newUser()">wrap</button>
+<button onclick="chat()">Chat</button>
+<script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script> 
+<script>
+    //var socket = io('https://173.212.232.150:443');
+    function newUser(){ 
+        //testing pay functions
+        getUser()
+        .then(res =>{
+            console.log(res)
+         })
+    } 
+    async function getUser(){
+        const data = {
+            code:"ADA",
+            issuer:"GDNDQLCI3ZZV7JRENS4DVT4BWEU5ZQHLGQQIACF77TNMV6PXANFFLO4Q"
+        }
+        return fetch("http://localhost:4000/wrap?code=" + data.code + "&issuer=" + data.issuer + "&id=" + Math.random(), {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            headers: {
+              'Content-Type': 'application/json'
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        //    body: JSON.stringify(data)// body data type must match "Content-Type" header
+      }).then((response) => response.json()
+        .then((data) => {return data}))
+    }   
+    //register users
+    function chat() {
+        socket.emit("register", {id:prompt('id'), dao:"hey"}, (status)=> {
+            console.log(status)
+        });
+        socket.emit('msg', {
+            msg:"Hi there",
+            receiver:prompt('receiver'),
+         }, (status) => {
+            console.log(status)
+        })
+        socket.emit('broadcast', {
+            msg:"Hi there",
+         }, (status) => {
+            console.log(status)
+        })
+        socket.on('msg', (data) => {
+            console.log(data)
+        })
+        socket.on('broadcast', (data) => {
+            console.log(data)
+        })
+    }
+</script>
